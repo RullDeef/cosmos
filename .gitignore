@@ -1,3 +1,7 @@
+# Doxygen generated docs (unused ones) and .bat files for doc compilation
+/Doxygen/DoxyFile
+/Doxygen/gendoc.bat
+
 # This .gitignore file should be placed at the root of your Unity project directory
 #
 # Get latest from https://github.com/github/gitignore/blob/master/Unity.gitignore
