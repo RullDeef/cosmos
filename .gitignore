@@ -2,8 +2,8 @@
 #
 # Ignore everything except one file - pdf with actual documentation
 #
+/Doxygen/latex/*
 !/Doxygen/latex/refman.pdf
-/Doxygen/latex
 /Doxygen/html
 /Doxygen/DoxyFile
 /Doxygen/gendoc.bat
