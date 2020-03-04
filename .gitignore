@@ -1,4 +1,10 @@
 # Doxygen generated docs (unused ones) and .bat files for doc compilation
+#
+# Ignore everything except one file - pdf with actual documentation
+#
+!/Doxygen/latex/refman.pdf
+/Doxygen/latex
+/Doxygen/html
 /Doxygen/DoxyFile
 /Doxygen/gendoc.bat
 
