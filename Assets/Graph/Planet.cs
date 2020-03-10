@@ -9,11 +9,6 @@ using UnityEngine;
  */
 public class Planet : MonoBehaviour
 {
-    public Vector3 position
-    {
-        get { return transform.position; }
-    }
-
     public int banksAmount = 1;
     public int factoryAmount = 1;
 }

@@ -54,13 +54,13 @@ public class CameraController : MonoBehaviour
         float maxDistance = 0.0f;
         float currDistance;
 
-        foreach (PlanetSystem planet in graph.GetNeighbors(observablePlanetSystem))
+        foreach (PlanetSystem system in graph.GetNeighbors(observablePlanetSystem))
         {
-            currDistance = (planet.position - observablePlanetSystem.position).magnitude;
+            currDistance = (system.transform.position - observablePlanetSystem.transform.position).magnitude;
             maxDistance = Mathf.Max(maxDistance, currDistance);
         }
 
-        UpdateTargetObservable(observablePlanetSystem.position, 2.5f * maxDistance);
+        UpdateTargetObservable(observablePlanetSystem.transform.position, 2.5f * maxDistance);
     }
 
     /**

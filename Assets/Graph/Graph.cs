@@ -40,12 +40,13 @@ public class Graph
 
         foreach(PlanetSystem node in nodes)
         {
-            topLeftFront.x = Mathf.Max(topLeftFront.x, node.position.x);
-            topLeftFront.y = Mathf.Max(topLeftFront.y, node.position.y);
-            topLeftFront.z = Mathf.Max(topLeftFront.z, node.position.z);
-            botRightBack.x = Mathf.Min(botRightBack.x, node.position.x);
-            botRightBack.y = Mathf.Min(botRightBack.y, node.position.y);
-            botRightBack.z = Mathf.Min(botRightBack.z, node.position.z);
+            Vector3 pos = node.transform.position;
+            topLeftFront.x = Mathf.Max(topLeftFront.x, pos.x);
+            topLeftFront.y = Mathf.Max(topLeftFront.y, pos.y);
+            topLeftFront.z = Mathf.Max(topLeftFront.z, pos.z);
+            botRightBack.x = Mathf.Min(botRightBack.x, pos.x);
+            botRightBack.y = Mathf.Min(botRightBack.y, pos.y);
+            botRightBack.z = Mathf.Min(botRightBack.z, pos.z);
         }
 
         return topLeftFront - botRightBack;
@@ -68,7 +69,7 @@ public class Graph
         int i = nodes.IndexOf(node1);
         int j = nodes.IndexOf(node2);
 
-        return this[i, j];
+        return connections[i, j];
     }
 
     /**
@@ -81,8 +82,8 @@ public class Graph
         int i = nodes.IndexOf(node);
         for (int j = 0; j < nodes.Count; j++)
         {
-            if (this[i, j])
-                neighbors.Add(this[j]);
+            if (connections[i, j])
+                neighbors.Add(nodes[j]);
         }
 
         return neighbors;
@@ -94,72 +95,16 @@ public class Graph
      * 
      * Used in Generate method only.
      */
-    private void NormalizeLocation()
+    public void NormalizeLocation()
     {
         Vector3 center = Vector3.zero;
 
         foreach(PlanetSystem node in nodes)
-            center += node.position;
+            center += node.transform.position;
 
         center /= nodes.Count;
 
         foreach(PlanetSystem node in nodes)
-            node.position -= center;
-    }
-
-    /**
-     * Generates node graph by given params.
-     * 
-     * nodesCount - amount of generated nodes.
-     * minDistance - minimal distance between two nodes.
-     * 
-     * Maximum distance will be calculated from minimum as follows:
-     *      max = min * (sqrt(2) - 0.1)
-     */
-    public static Graph Generate(int nodesCount, float minDistance = 32.0f)
-    {
-        Graph graph = new Graph();
-
-        // choose min and max distances to place nodes
-        float maxDistance = minDistance * (Mathf.Sqrt(2.0f) - 0.1f);
-
-        // generate first node
-        graph.nodes = new List<PlanetSystem>() { new PlanetSystem() };
-
-        // generate exactly 'nodesCount' nodes
-        for(int i = 1; i < nodesCount; i++)
-        {
-            // choose random position
-            Vector3 pos = Random.onUnitSphere;
-            pos = pos.normalized * (graph.GetRadius() + maxDistance);
-
-            // check distance to closest node
-            float closestDist = Mathf.Infinity, currentDist;
-            for(int j = 0; j < i; j++)
-            {
-                currentDist = (graph[j].position - pos).magnitude;
-                closestDist = Mathf.Min(closestDist, currentDist);
-            }
-
-            // compare it with lower and upper bounds
-            if(minDistance < closestDist && closestDist < maxDistance)
-                graph.nodes.Add(new PlanetSystem());
-            else i--;
-        }
-
-        // generate connections between nodes that are close enough
-        graph.connections = new bool[nodesCount, nodesCount];
-
-        for(int i = 1; i < nodesCount; i++)
-        for(int j = 0; j < i; j++)
-        {
-            float currentDist = (graph[i].position - graph[j].position).magnitude;
-            bool connected = currentDist < maxDistance;
-            graph.connections[i, j] = connected;
-            graph.connections[j, i] = connected;
-        }
-
-        graph.NormalizeLocation();
-        return graph;
+            node.transform.position -= center;
     }
 }
