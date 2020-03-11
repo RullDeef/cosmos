@@ -199,6 +199,8 @@ public class GraphGenerator : MonoBehaviour
                 transform).GetComponent<LineRenderer>();
 
         Vector3 delta = to.transform.position - from.transform.position;
-        connection.SetPosition(1, delta);
+
+        for (int t = 1; t <= 10; t++)
+            connection.SetPosition(t, t / 10.0f * delta);
     }
 }

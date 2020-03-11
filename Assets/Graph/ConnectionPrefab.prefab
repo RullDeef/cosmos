@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7872023818896393022}
   - component: {fileID: 2477327585563942674}
   m_Layer: 0
-  m_Name: Connection
+  m_Name: ConnectionPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -72,22 +72,49 @@ LineRenderer:
   m_SortingOrder: 0
   m_Positions:
   - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0.1}
+  - {x: 0, y: 0, z: 0.2}
+  - {x: 0, y: 0, z: 0.3}
+  - {x: 0, y: 0, z: 0.4}
+  - {x: 0, y: 0, z: 0.5}
+  - {x: 0, y: 0, z: 0.6}
+  - {x: 0, y: 0, z: 0.7}
+  - {x: 0, y: 0, z: 0.8}
+  - {x: 0, y: 0, z: 0.9}
   - {x: 0, y: 0, z: 1}
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 0.1
+    widthMultiplier: 0.05
     widthCurve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
-        time: 0
-        value: 1
+        time: 0.25
+        value: 0
         inSlope: 0
         outSlope: 0
         tangentMode: 0
         weightedMode: 0
         inWeight: 0.33333334
         outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 0.5
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 1
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0
+      - serializedVersion: 3
+        time: 0.75
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
