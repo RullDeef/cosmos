@@ -90,7 +90,7 @@ public class CameraController : MonoBehaviour
 
             if (Physics.Raycast(ray, out hit))
             {
-                PlanetSystem planetSystem = hit.transform.GetComponent<PlanetSystem>();
+                PlanetSystem planetSystem = hit.transform.parent.GetComponent<PlanetSystem>();
                 if (planetSystem != null)
                 {
                     observablePlanetSystem = planetSystem;
