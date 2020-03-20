@@ -92,7 +92,7 @@ GameObject:
   - component: {fileID: 7216159338852594877}
   - component: {fileID: 7462400774182925912}
   m_Layer: 0
-  m_Name: Sphere
+  m_Name: SphereCollider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

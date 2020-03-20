@@ -9,7 +9,7 @@ using UnityEngine;
  * \brief   Monobehaviour.
  *          Graph generator and holder.
  */
-[ExecuteAlways]
+[ExecuteAlways, RequireComponent(typeof(PlanetSystemGenerator))]
 public class GraphGenerator : MonoBehaviour
 {
     /**
@@ -23,20 +23,8 @@ public class GraphGenerator : MonoBehaviour
     public float systemDistance = 3.0f;
 
     /**
-     * Amount of planets in one system.
+     * Prefab for connections between systems.
      */
-    public int planetsAmount = 3;
-
-    /**
-     * Planet orbits radius step.
-     */
-    public float planetOrbitStep = 0.4f;
-
-    /**
-     * Prefabs for planets, systems and connections between systems.
-     */
-    public GameObject planetPrefab;
-    public GameObject systemPrefab;
     public GameObject connectionPrefab;
 
     /**
@@ -63,13 +51,15 @@ public class GraphGenerator : MonoBehaviour
      */
     public void GenerateGraph()
     {
+        PlanetSystemGenerator planetSystemGenerator = GetComponent<PlanetSystemGenerator>();
+
         graph = new Graph();
 
         // choose min and max distances to place nodes
         float maxDistance = systemDistance * (Mathf.Sqrt(2.0f) - 0.1f);
 
         // generate first node
-        graph.nodes = new List<PlanetSystem>() { GeneratePlanetSystem(planetsAmount) };
+        graph.nodes = new List<PlanetSystem>() { planetSystemGenerator.GeneratePlanetSystem() };
 
         for (int i = 1; i < systemsAmount; i++)
         {
@@ -88,7 +78,7 @@ public class GraphGenerator : MonoBehaviour
             // compare it with lower and upper bounds
             if (systemDistance < closestDist && closestDist < maxDistance)
             {
-                PlanetSystem system = GeneratePlanetSystem(planetsAmount);
+                PlanetSystem system = planetSystemGenerator.GeneratePlanetSystem();
                 system.transform.position = pos;
                 graph.nodes.Add(system);
             }
@@ -128,38 +118,7 @@ public class GraphGenerator : MonoBehaviour
     }
 
     /**
-     *  Randomly generates new system with given planets amount.
-     */
-    public PlanetSystem GeneratePlanetSystem(int planetsAmount)
-    {
-        GameObject instance;
-        PlanetSystem system;
-
-        instance = Instantiate(systemPrefab, transform);
-
-        system = instance.GetComponent<PlanetSystem>();
-
-        // generate planets as children
-        for (int i = 0; i < planetsAmount; i++)
-        {
-            float radius = (i + 1) * planetOrbitStep;
-            float angle = Random.Range(0, 360);
-
-            Matrix4x4 rotation = Matrix4x4.Rotate(Quaternion.Euler(0, 0, angle));
-            Vector3 planetPosition = new Vector3(radius, 0, 0);
-            planetPosition = rotation.MultiplyPoint(planetPosition);
-
-            GameObject planet = Instantiate(planetPrefab, system.transform);
-            planet.transform.position = planetPosition;
-
-            system.planets.Add(planet.GetComponent<Planet>());
-        }
-        
-        return system;
-    }
-
-    /**
-     * Destroys all spawned pbjects and resets graph to null.
+     * Destroys all spawned objects and resets graph to null.
      */
     public void ClearGraph()
     {
@@ -169,19 +128,6 @@ public class GraphGenerator : MonoBehaviour
 
         graph = null;
     }
-
-    /**
-     * Creates new PlanetObject and asociates it with given planet.
-     * 
-     * Used only in GenerateSystemGraph method.
-     */
-    /*
-    private void InstantiatePlanet(Planet planet)
-    {
-        Instantiate(planetPrefab, planet.position, Quaternion.identity,
-            transform).GetComponent<PlanetObject>().planet = planet;
-    }
-    */
 
     /**
      * Creates new Connection object that links

@@ -11,10 +11,9 @@ GameObject:
   - component: {fileID: 3294539989085837853}
   - component: {fileID: 6728675804605347112}
   - component: {fileID: 8025544915653647959}
-  - component: {fileID: 4015445155337303282}
   - component: {fileID: 1023956645847985399}
   m_Layer: 0
-  m_Name: Planet Prefab
+  m_Name: PlanetPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -81,19 +80,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!135 &4015445155337303282
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3087378078403214948}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &1023956645847985399
 MonoBehaviour:
   m_ObjectHideFlags: 0
