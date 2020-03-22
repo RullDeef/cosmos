@@ -9,7 +9,6 @@ using UnityEngine;
  */
 public class CameraController : MonoBehaviour
 {
-    public GraphGenerator graphGenerator;
     private Graph graph;
 
     private PlanetSystem observablePlanetSystem;
@@ -30,6 +29,8 @@ public class CameraController : MonoBehaviour
      * Field of view (FOV) for camera controller.
      */
     private const float observableAngle = 60.0f * Mathf.PI / 180.0f;
+
+    private SystemSelector systemSelector;
 
     /**
      * Prepares speed to target position and orientation
@@ -83,6 +84,22 @@ public class CameraController : MonoBehaviour
 
     private void Update()
     {
+        if (graph == null)
+        {
+            graph = GameObject.FindObjectOfType<GraphGenerator>().graph;
+            if (graph == null) 
+            {
+                Debug.Log("Graph is null!");
+                return;
+            }
+
+            // look to entire graph at start
+            Vector3 size = graph.GetSize();
+
+            // update target observable
+            UpdateTargetObservable(Vector3.zero, size.magnitude);
+        }
+
         if (Input.GetMouseButtonUp(0) && !mouseIsDragging)
         {
             RaycastHit hit;
@@ -95,6 +112,10 @@ public class CameraController : MonoBehaviour
                 {
                     observablePlanetSystem = planetSystem;
                     UpdateTargetObservablePlanet();
+
+                    if (systemSelector == null)
+                        systemSelector = GameObject.FindObjectOfType<SystemSelector>();
+                    systemSelector.selected.Add(planetSystem);
                 }
             }
             else
@@ -125,18 +146,6 @@ public class CameraController : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             mouseIsDragging = false;
-        }
-
-        if (graph == null)
-        {
-            graph = graphGenerator.graph;
-            if (graph == null) return;
-
-            // look to entire graph at start
-            Vector3 size = graph.GetSize();
-
-            // update target observable
-            UpdateTargetObservable(Vector3.zero, size.magnitude);
         }
 
         UpdateTransform();

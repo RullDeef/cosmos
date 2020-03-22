@@ -1,7 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
+[System.Serializable, ExecuteAlways]
 public class Ship : MonoBehaviour
 {
     public enum ShipState
@@ -19,13 +18,14 @@ public class Ship : MonoBehaviour
      */
     void Update()
     {
-        if (state == ShipState.Idle)
+        if (state == ShipState.Idle && target != null)
         {
-            Vector3 newPosition = transform.localPosition;
+            Vector3 delta = transform.position - target.position;
             Quaternion rotation = Quaternion.Euler(0, 0, 90 * Time.deltaTime);
             Matrix4x4 matrix = Matrix4x4.Rotate(rotation);
-            newPosition = matrix.MultiplyPoint(newPosition);
-            transform.localPosition = newPosition;
+
+            Vector3 newPosition = target.position + matrix.MultiplyPoint(delta);
+            transform.position = newPosition;
         }
     }
 }

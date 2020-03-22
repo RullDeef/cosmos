@@ -34,6 +34,9 @@ public class GraphGenerator : MonoBehaviour
 
     private void Start()
     {
+        // dont do it
+        // Issue: Граф сбрасывается самопроизвольно при старте игры
+        // поэтому необходимо вручную генерировать его заново.
         ClearGraph();
         GenerateGraph();
     }

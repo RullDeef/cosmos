@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 /**
  * \brief   Monobehaviour.
@@ -53,5 +51,10 @@ public class PlanetSystemGenerator : MonoBehaviour
         }
 
         return system;
+    }
+
+    public float GetShipOrbitRadius()
+    {
+        return planetOrbitStep * (planetsAmount + 1);
     }
 }
