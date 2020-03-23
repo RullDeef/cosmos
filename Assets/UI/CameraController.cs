@@ -2,6 +2,7 @@
  * \file    CameraController.cs
  * \brief   File with CameraController definition.
  */
+using System.Collections.Generic;
 using UnityEngine;
 
 /**
@@ -9,59 +10,97 @@ using UnityEngine;
  */
 public class CameraController : MonoBehaviour
 {
-    private Graph graph;
-
-    private PlanetSystem observablePlanetSystem;
+    /**
+     * Главный обозреваемый объект
+     */
+    private GameObject mainObservable;
+    /**
+     * Список обозреваемых объектов
+     */
+    private List<GameObject> observables = new List<GameObject>();
 
     private Vector3 targetPosition;
     private float targetDistance;
     private float speed = 5.0f;
 
+    public Vector3 defaultObservablePosition = Vector3.zero;
+
+    [Range(0, 50)]
+    public float defaultObservableDistance = 5.0f;
+
     [Range(1, 10)]
     public float mouseRotationSpeed = 3.0f;
-
-    /**
-     * Mouse dragging state tracker.
-     */
-    private bool mouseIsDragging;
     
     /**
      * Field of view (FOV) for camera controller.
      */
     private const float observableAngle = 60.0f * Mathf.PI / 180.0f;
 
-    private SystemSelector systemSelector;
+    private InputController inputController;
 
-    /**
-     * Prepares speed to target position and orientation
-     * to fully see sphere with given center and radius.
-     */
-    private void UpdateTargetObservable(Vector3 center, float radius)
+    private void Awake()
     {
+        inputController = GameObject.FindObjectOfType<InputController>();
+    }
 
-        targetPosition = center;
-        targetDistance = 0.5f * radius / Mathf.Sin(observableAngle / 2.0f);
+    public void SetMainObservable(GameObject obj)
+    {
+        if (observables.Contains(obj))
+            observables.Remove(obj);
+        mainObservable = obj;
+
+        RecalculateObservableParams();
+    }
+
+    public void AddObservable(GameObject obj)
+    {
+        if (obj != mainObservable && !observables.Contains(obj))
+            observables.Add(obj);
+
+        RecalculateObservableParams();
+    }
+
+    public void ClearObservables()
+    {
+        mainObservable = null;
+        observables.Clear();
+
+        RecalculateObservableParams();
     }
 
     /**
-     * Makes target currently selected planet and
-     * updates speed and orientation to that target.
-     * 
-     * Used only in Update method.
+     * Пересчитывает позицию и дистанцию наблюдения исходя
+     * из текущих обозреваемых объектов.
      */
-    private void UpdateTargetObservablePlanet()
+    private void RecalculateObservableParams()
     {
-        // calculate size of current group based on the max distance.
-        float maxDistance = 0.0f;
-        float currDistance;
-
-        foreach (PlanetSystem system in graph.GetNeighbors(observablePlanetSystem))
+        if (mainObservable != null)
         {
-            currDistance = (system.transform.position - observablePlanetSystem.transform.position).magnitude;
+            // calculate size of current group based on the max distance from first observable.
+            targetPosition = mainObservable.transform.position;
+        }
+        else if (observables.Count == 0)
+        {
+            targetPosition = defaultObservablePosition;
+        }
+        else
+        {
+            // dont stick to particular observable
+            targetPosition = Vector3.zero;
+            foreach (GameObject obj in observables)
+                targetPosition += obj.transform.position;
+            targetPosition /= observables.Count;
+        }
+
+        float maxDistance = observables.Count == 0 ? defaultObservableDistance : 0.0f;
+
+        foreach (GameObject obj in observables)
+        {
+            float currDistance = (obj.transform.position - targetPosition).magnitude;
             maxDistance = Mathf.Max(maxDistance, currDistance);
         }
 
-        UpdateTargetObservable(observablePlanetSystem.transform.position, 2.5f * maxDistance);
+        targetDistance = 1.25f * maxDistance / Mathf.Sin(observableAngle / 2);
     }
 
     /**
@@ -84,61 +123,11 @@ public class CameraController : MonoBehaviour
 
     private void Update()
     {
-        if (graph == null)
-        {
-            graph = GameObject.FindObjectOfType<GraphGenerator>().graph;
-            if (graph == null) 
-            {
-                Debug.Log("Graph is null!");
-                return;
-            }
-
-            // look to entire graph at start
-            Vector3 size = graph.GetSize();
-
-            // update target observable
-            UpdateTargetObservable(Vector3.zero, size.magnitude);
-        }
-
-        if (Input.GetMouseButtonUp(0) && !mouseIsDragging)
-        {
-            RaycastHit hit;
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-            if (Physics.Raycast(ray, out hit))
-            {
-                PlanetSystem planetSystem = hit.transform.parent.GetComponent<PlanetSystem>();
-                if (planetSystem != null)
-                {
-                    observablePlanetSystem = planetSystem;
-                    UpdateTargetObservablePlanet();
-
-                    if (systemSelector == null)
-                        systemSelector = GameObject.FindObjectOfType<SystemSelector>();
-                    systemSelector.HandleSelection(planetSystem);
-                }
-            }
-            else
-            {
-                // look to entire graph on click in sky
-                Vector3 size = graph.GetSize();
-                UpdateTargetObservable(Vector3.zero, size.magnitude);
-
-                if (systemSelector == null)
-                    systemSelector = GameObject.FindObjectOfType<SystemSelector>();
-                systemSelector.HandleCancelation();
-            }
-        }
-        if (Input.GetMouseButton(0))
+        if (inputController.IsDragging())
         {
             // look around
             float dx = mouseRotationSpeed * Input.GetAxis("Mouse X");
             float dy = mouseRotationSpeed * Input.GetAxis("Mouse Y");
-
-            if (dx * dx + dy * dy > 0.0)
-            {
-                mouseIsDragging = true;
-            }
 
             Matrix4x4 translateMatrix = Matrix4x4.Translate(targetPosition);
             Matrix4x4 rotateMatrix = Matrix4x4.Rotate(Quaternion.Euler(-dy * 0, dx, 0));
@@ -146,10 +135,6 @@ public class CameraController : MonoBehaviour
 
             transform.position = result.MultiplyPoint(transform.position);
             transform.rotation = Quaternion.LookRotation(targetPosition - transform.position);
-        }
-        if (Input.GetMouseButtonDown(0))
-        {
-            mouseIsDragging = false;
         }
 
         UpdateTransform();
