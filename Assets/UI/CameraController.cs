@@ -115,7 +115,7 @@ public class CameraController : MonoBehaviour
 
                     if (systemSelector == null)
                         systemSelector = GameObject.FindObjectOfType<SystemSelector>();
-                    systemSelector.selected.Add(planetSystem);
+                    systemSelector.HandleSelection(planetSystem);
                 }
             }
             else
@@ -123,6 +123,10 @@ public class CameraController : MonoBehaviour
                 // look to entire graph on click in sky
                 Vector3 size = graph.GetSize();
                 UpdateTargetObservable(Vector3.zero, size.magnitude);
+
+                if (systemSelector == null)
+                    systemSelector = GameObject.FindObjectOfType<SystemSelector>();
+                systemSelector.HandleCancelation();
             }
         }
         if (Input.GetMouseButton(0))

@@ -82,6 +82,8 @@ public class GraphGenerator : MonoBehaviour
             if (systemDistance < closestDist && closestDist < maxDistance)
             {
                 PlanetSystem system = planetSystemGenerator.GeneratePlanetSystem();
+                // assign name to system
+                system.gameObject.name += $" {i}";
                 system.transform.position = pos;
                 graph.nodes.Add(system);
             }

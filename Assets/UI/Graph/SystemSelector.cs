@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 /**
  * Синглтон-класс для управления системами.
@@ -9,12 +10,93 @@ using UnityEngine;
  */
 public class SystemSelector : MonoBehaviour
 {
-    /**
-     * Сам список выбранных систем.
-     */
-    public List<PlanetSystem> selected;
+    public enum SelectionState
+    {
+        current,
+        target
+    }
 
-    private void OnRenderImage(RenderTexture src, RenderTexture dest) {
-        // render process here...
+    /**
+     * Переменная текущего состояния выделения.
+     * Может принимать значения:
+     *   Выбор текущей системы (current)
+     *   Выбор целевых систем (target)
+     */
+    public SelectionState state = SelectionState.current;
+
+    /**
+     * Текущая выбранная система.
+     */
+    public PlanetSystem currentSystem;
+
+    /**
+     * Список выбранных целевых систем.
+     */
+    public List<PlanetSystem> targetSystems;
+
+    /**
+     * Ссылка на текст для вывода отладочной информации
+     * о количестве выбранных систем.
+     */
+    public TMP_Text text;
+
+    /**
+     * Обработчик события выделения системы кликом на неё.
+     */
+    public void HandleSelection(PlanetSystem system)
+    {
+        switch (state)
+        {
+            case SelectionState.current:
+                currentSystem = system;
+                break;
+            
+            case SelectionState.target:
+                if (targetSystems.Contains(system))
+                    targetSystems.Remove(system);
+                else
+                    targetSystems.Add(system);
+                break;
+        }
+    }
+
+    /**
+     * Обработчик события отмены выделения (клик по пустому пространству).
+     */
+    public void HandleCancelation()
+    {
+        switch (state)
+        {
+            case SelectionState.current:
+                currentSystem = null;
+                break;
+            
+            case SelectionState.target:
+                // do nothing
+                break;
+        }
+    }
+
+    /**
+     * Обновление текстовых переменных.
+     */
+    private void Update()
+    {
+        string textString;
+        if (currentSystem == null)
+            textString = "Текущая система не выбрана";
+        else
+            textString = $"Текущая система: {currentSystem.gameObject.name}";
+        
+        if (targetSystems.Count == 0)
+            textString += "\nЦелевые системы не выбраны";
+        else
+        {
+            textString += "\nЦелевые системы:";
+            for (int i = 0; i < targetSystems.Count; i++)
+                textString += $"\n  {i+1}: {targetSystems[i].gameObject.name}";
+        }
+
+        text.text = textString;
     }
 }
