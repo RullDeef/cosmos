@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 /**
@@ -10,6 +11,12 @@ using TMPro;
  */
 public class SystemSelector : MonoBehaviour
 {
+    /**
+     * Печерисление всех возможных состояний выделения систем.
+     * 
+     * current - выбор текущей системы
+     * target - выбор целевых систем
+     */
     public enum SelectionState
     {
         current,
@@ -18,9 +25,6 @@ public class SystemSelector : MonoBehaviour
 
     /**
      * Переменная текущего состояния выделения.
-     * Может принимать значения:
-     *   Выбор текущей системы (current)
-     *   Выбор целевых систем (target)
      */
     public SelectionState state = SelectionState.current;
 
@@ -32,7 +36,7 @@ public class SystemSelector : MonoBehaviour
     /**
      * Список выбранных целевых систем.
      */
-    public List<PlanetSystem> targetSystems;
+    public List<PlanetSystem> targetSystems = new List<PlanetSystem>();
 
     /**
      * Ссылка на текст для вывода отладочной информации
@@ -40,19 +44,80 @@ public class SystemSelector : MonoBehaviour
      */
     public TMP_Text text;
 
+    public Button sendButton;
+
     private InputController inputController;
     private CameraController cameraController;
+    private FleetManager fleetManager;
 
     private void Awake()
     {
         inputController = GameObject.FindObjectOfType<InputController>();
         cameraController = GameObject.FindObjectOfType<CameraController>();
+        fleetManager = GameObject.FindObjectOfType<FleetManager>();
 
         UpdateCameraObservables();
     }
 
+    public void HandleSendButtonClick()
+    {
+        switch (state)
+        {
+            case SelectionState.current:
+                state = SelectionState.target;
+                sendButton.GetComponentInChildren<TMP_Text>().text = "Разослать флоты";
+                break;
+            
+            case SelectionState.target:
+                state = SelectionState.current;
+                sendButton.GetComponentInChildren<TMP_Text>().text = "Выбрать целевые системы";
+                SendFleet();
+                targetSystems.Clear();
+                break;
+        }
+    }
+
+    /**
+     * Метод, распределяющий флот с текущей системы по
+     * соседним выбранным в качестве целевых.
+     */
+    public void SendFleet()
+    {
+        if (currentSystem == null)
+        {
+            Debug.Log("Current system is not selected!");
+            return;
+        }
+
+        if (targetSystems.Count == 0)
+        {
+            Debug.Log("Target systems are not selected!");
+            return;
+        }
+
+        Fleet currentFleet = fleetManager.GetAssociatedFleet(currentSystem);
+        int shipsAmount = currentFleet.ships.Count;
+        int sendAmount = shipsAmount / targetSystems.Count;
+
+        foreach (PlanetSystem targetSystem in targetSystems)
+        {
+            if (targetSystem == currentSystem)
+                continue;
+            
+            Fleet newFleet = fleetManager.SplitPart(currentFleet, sendAmount);
+            StartCoroutine(fleetManager.SendFleetFromTo(newFleet, currentSystem, targetSystem));
+            Debug.Log($"Successfully sended {sendAmount} ships to anouter system!");
+        }
+    }
+
     /**
      * Обработчик события выделения системы кликом на неё.
+     *
+     * Если текущее состояние - выбор текущей системы, то
+     * клик по системе сделает её текущей.
+     * 
+     * Если текущее состояние - выбор целевых систем, то
+     * клик по системе сменит её состояние выбрано/не выбрано.
      */
     public void HandleSelection(PlanetSystem system)
     {
@@ -70,12 +135,13 @@ public class SystemSelector : MonoBehaviour
                 break;
         }
 
-        // updates camera observing objects
         UpdateCameraObservables();
     }
 
     /**
      * Обработчик события отмены выделения (клик по пустому пространству).
+     * При нахождении в состоянии "выделение текущей системы"
+     * просто сбрасывает выделение. 
      */
     public void HandleCancelation()
     {
@@ -86,7 +152,6 @@ public class SystemSelector : MonoBehaviour
                 break;
             
             case SelectionState.target:
-                // do nothing
                 break;
         }
 
@@ -112,13 +177,21 @@ public class SystemSelector : MonoBehaviour
         }
     }
 
+    // TODO: refactor this method to achieve best performance
     private void UpdateText()
     {
         string textString;
         if (currentSystem == null)
             textString = "Текущая система не выбрана";
         else
-            textString = $"Текущая система: {currentSystem.gameObject.name}";
+        {
+            textString = $"Текущая система: {currentSystem.gameObject.name.Substring(25)} ";
+            int shipsAmount = 0;
+            Fleet fleet = fleetManager.GetAssociatedFleet(currentSystem);
+            if (fleet != null)
+                shipsAmount = fleet.ships.Count;
+            textString += $"с фтолом в {shipsAmount} кораблей.";
+        }
 
         if (targetSystems.Count == 0)
             textString += "\nЦелевые системы не выбраны";
@@ -126,7 +199,7 @@ public class SystemSelector : MonoBehaviour
         {
             textString += "\nЦелевые системы:";
             for (int i = 0; i < targetSystems.Count; i++)
-                textString += $"\n  {i + 1}: {targetSystems[i].gameObject.name}";
+                textString += $"\n  {i + 1}: {targetSystems[i].gameObject.name.Substring(25)}";
         }
 
         text.text = textString;
