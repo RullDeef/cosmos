@@ -9,13 +9,14 @@ public class FleetManager : MonoBehaviour
     public List<Fleet> fleets = new List<Fleet>();
 
     /**
-     * Used to instantiate new fleet.
+     * \brief   Используется для создания нового флота
+     *          (для отладки онли?).
      */
     public int shipsAmount;
 
     /**
-     * Время в секундах, необходимое для перелёта
-     * флота с одной системы на другую.
+     * \brief   Время в секундах, необходимое для перелёта
+     *          флота с одной системы на другую.
      */
     public float flightTime = 2.0f;
 
@@ -29,7 +30,7 @@ public class FleetManager : MonoBehaviour
     }
 
     /**
-     * Used only within editor!!
+     * \brief   Создаёт флот в текущей выбранной системе (для отладки онли?).
      */
     public Fleet CreateNewFleet(int shipsAmount)
     {
@@ -66,7 +67,7 @@ public class FleetManager : MonoBehaviour
     }
 
     /**
-     * Used within editor only!!
+     * \brief   Удаляет все имеющиеся флоты (для отладки онли).
      */
     public void RemoveAllFleets()
     {
@@ -88,10 +89,9 @@ public class FleetManager : MonoBehaviour
 
         fleets.Clear();
     }
-    
+
     /**
-     * Finds and returns fleet that had been
-     * associated with given planet system.
+     * \brief   Производит поиск флота, привязанного к переданной системе.
      */
     public Fleet GetAssociatedFleet(PlanetSystem system)
     {

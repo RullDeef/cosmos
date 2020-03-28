@@ -2,11 +2,8 @@
 #
 # Ignore everything except one file - pdf with actual documentation
 #
-/Doxygen/latex/*
-!/Doxygen/latex/refman.pdf
-/Doxygen/html
-/Doxygen/DoxyFile
-/Doxygen/gendoc.bat
+/Doxygen
+!/Doxygen/refman.pdf
 
 # This .gitignore file should be placed at the root of your Unity project directory
 #
