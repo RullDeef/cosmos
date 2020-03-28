@@ -46,27 +46,9 @@ public class Ship : MonoBehaviour
         }
     }
 
-    /**
-     * \brief   Каждый кадр обновляет позицию корабля основываясь
-     *          на текущем состоянии корабля и его целевом объекте.
-     * 
-     * Поворот реализуется так, что корабль всегда вращается
-     * в плоскости перпендикулярной направлению взгяда камеры.
-     */
     void Update()
     {
-        // TODO: add camera-depend motion
-        if (state == ShipState.idle && targetPosition != null)
-        {
-            Vector3 delta = transform.position - targetPosition;
-            Quaternion rotation = Quaternion.Euler(0, 0, 90 * Time.deltaTime);
-            Matrix4x4 matrix = Matrix4x4.Rotate(rotation);
-
-            delta = matrix.MultiplyPoint(delta);
-            delta = orbitRadius * delta.normalized;
-            transform.position = targetPosition + delta;
-        }
-        else if (state == ShipState.flow)
+        if (state == ShipState.flow)
         {
             Vector3 delta = orbitRadius * offset;
             transform.position = targetPosition + delta;

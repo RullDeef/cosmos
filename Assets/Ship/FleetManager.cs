@@ -49,12 +49,19 @@ public class FleetManager : MonoBehaviour
         {
             // place new ship correctly
             float radius = GameObject.FindObjectOfType<PlanetSystemGenerator>().GetShipOrbitRadius();
-            Vector3 direction = Random.onUnitSphere;
-            Vector3 position = ownerTransform.position + radius * direction;
+            // Vector3 direction = Random.onUnitSphere;
+            // Vector3 position = ownerTransform.position + radius * direction;
 
-            Quaternion rotation = Quaternion.FromToRotation(Vector3.right, direction);
+            // Quaternion rotation = Quaternion.FromToRotation(Vector3.right, direction);
             
-            Ship ship = Instantiate(shipPrefab, position, rotation, transform);
+            Ship ship = Instantiate(shipPrefab, ownerTransform.position, Quaternion.identity, transform);
+
+            float r1 = radius;
+            float r2 = 0.1f * r1;
+            Orbiter orbiter = ship.GetComponent<Orbiter>();
+            orbiter.InitRandomInThor(Vector3.back, r1, r2);
+            orbiter.targetTransform = ownerTransform;
+
             fleet.ships.Add(ship);
             Debug.Log("New ship generated!");
         }
