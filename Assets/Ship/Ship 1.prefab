@@ -25,13 +25,15 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3047144850000729092}
-  m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: -0.46421742, y: 0.26577973, z: 3.9513326}
-  m_LocalScale: {x: 100, y: 99.999985, z: 99.999985}
-  m_Children: []
+  m_LocalRotation: {x: 0.5, y: 0.5, z: -0.5, w: 0.5}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 100, y: 100, z: 100}
+  m_Children:
+  - {fileID: 8243718814752328307}
+  - {fileID: 3052289434926808329}
   m_Father: {fileID: 6975674392290367435}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 90, y: 90, z: 0}
 --- !u!33 &8902613478656871687
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -104,12 +106,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5321676434697938456}
-  m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: -0.46421742, y: 0.26577973, z: 3.9513326}
-  m_LocalScale: {x: 100, y: 99.999985, z: 99.999985}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 6975674392290367435}
-  m_RootOrder: 1
+  m_Father: {fileID: 7024992554694759753}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &2838864874814488519
 MeshFilter:
@@ -168,6 +170,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6975674392290367435}
   - component: {fileID: 4599334043639706467}
+  - component: {fileID: 467141570532212735}
   m_Layer: 0
   m_Name: Ship 1
   m_TagString: Untagged
@@ -187,8 +190,6 @@ Transform:
   m_LocalScale: {x: 0.03, y: 0.03, z: 0.03}
   m_Children:
   - {fileID: 7024992554694759753}
-  - {fileID: 8243718814752328307}
-  - {fileID: 3052289434926808329}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -207,6 +208,24 @@ MonoBehaviour:
   state: 0
   targetPosition: {x: 0, y: 0, z: 0}
   orbitRadius: 0
+--- !u!114 &467141570532212735
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6975674392290367434}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7954f73de1d46c40b488828e0e3ed42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetTransform: {fileID: 0}
+  orbitSpeed: 0.3
+  orbitRadius: 3
+  angleOffset: 0
+  orbitAxis: {x: 0, y: 1, z: 0}
+  startingOffset: {x: 1, y: 0, z: 0}
 --- !u!1 &8023391340491686196
 GameObject:
   m_ObjectHideFlags: 0
@@ -232,12 +251,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8023391340491686196}
-  m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: -0.46421742, y: 0.26577973, z: 3.9513326}
-  m_LocalScale: {x: 100, y: 99.999985, z: 99.999985}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 6975674392290367435}
-  m_RootOrder: 2
+  m_Father: {fileID: 7024992554694759753}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &5179336571826104450
 MeshFilter:

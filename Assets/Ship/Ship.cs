@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
 
 /**
-    * Перечисление всех возможных состояний корабля.
-    *
-    * - idle - патрулирование системы
-    * - flow - перелёт между системами
-    */
+ * \brief   Перечисление всех возможных состояний корабля.
+ *
+ * - idle - патрулирование системы
+ * - flow - перелёт между системами
+ */
 public enum ShipState
 {
     idle = 0,
@@ -26,7 +26,10 @@ public class Ship : MonoBehaviour
     public Vector3 targetPosition;
     public float orbitRadius;
 
-    // used in flow state to indicate relative position
+    /**
+     * \brief   Используется при перелёте, чтобы
+     *          указать относительную позицию.
+     */
     private Vector3 offset;
 
     public void ChangeState()
@@ -43,27 +46,9 @@ public class Ship : MonoBehaviour
         }
     }
 
-    /**
-     * Каждый кадр обновляет позицию корабля основываясь
-     * на текущем состоянии корабля и его целевом объекте.
-     * 
-     * Поворот реализуется так, что корабль всегда вращается
-     * в плоскости перпендикулярной направлению взгяда камеры.
-     */
     void Update()
     {
-        // TODO: add camera-depend motion
-        if (state == ShipState.idle && targetPosition != null)
-        {
-            Vector3 delta = transform.position - targetPosition;
-            Quaternion rotation = Quaternion.Euler(0, 0, 90 * Time.deltaTime);
-            Matrix4x4 matrix = Matrix4x4.Rotate(rotation);
-
-            delta = matrix.MultiplyPoint(delta);
-            delta = orbitRadius * delta.normalized;
-            transform.position = targetPosition + delta;
-        }
-        else if (state == ShipState.flow)
+        if (state == ShipState.flow)
         {
             Vector3 delta = orbitRadius * offset;
             transform.position = targetPosition + delta;

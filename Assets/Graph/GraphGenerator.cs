@@ -1,34 +1,26 @@
-﻿/**
- * \file    GraphGenerator.cs
- * \brief   File with GraphGenerator definition.
- */
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
-/**
- * \brief   Monobehaviour.
- *          Graph generator and holder.
- */
 [ExecuteAlways, RequireComponent(typeof(PlanetSystemGenerator))]
 public class GraphGenerator : MonoBehaviour
 {
     /**
-     * Amount of planet systems to generate.
+     * \brief   Количество генерируемых систем.
      */
     public int systemsAmount = 10;
 
     /**
-     * Minimum distance between two systems.
+     * \brief   Минимальное расстояние между системами.
      */
     public float systemDistance = 3.0f;
 
     /**
-     * Prefab for connections between systems.
+     * \brief   Prefab для связей между системами.
      */
     public GameObject connectionPrefab;
 
     /**
-     * Actual low-level graph object.
+     * \brief   Сам низкоуровневый граф.
      */
     public Graph graph;
 
@@ -47,9 +39,10 @@ public class GraphGenerator : MonoBehaviour
     }
 
     /**
-     *  Generates new Graph.
+     * \brief   Создаёт ноый граф.
      * 
-     *  Maximum distance will be calculated from minimum as follows:
+     * Максимальное расстояние между системами будет рассчитано по формуле:
+     *
      *      max = min * (sqrt(2) - 0.1)
      */
     public void GenerateGraph()
@@ -111,19 +104,13 @@ public class GraphGenerator : MonoBehaviour
 
         // instantiate connections between systems
         for (int i = 1; i < graph.nodes.Count; i++)
-        {
             for (int j = 0; j < i; j++)
-            {
                 if (graph.connections[i, j])
-                {
                     InstantiateConnection(i, j);
-                }
-            }
-        }
     }
 
     /**
-     * Destroys all spawned objects and resets graph to null.
+     * \brief   Удаляет все созданные объекты и сбрасывает граф.
      */
     public void ClearGraph()
     {
@@ -135,10 +122,9 @@ public class GraphGenerator : MonoBehaviour
     }
 
     /**
-     * Creates new Connection object that links
-     * two planet systems with given indices.
+     * \brief   Создаёт связь между системами с переданными индексами.
      * 
-     * Used only in GenerateSystemGraph method.
+     * Используется только в методе GenerateSystemGraph.
      */
     private void InstantiateConnection(int i, int j)
     {

@@ -9,13 +9,14 @@ public class FleetManager : MonoBehaviour
     public List<Fleet> fleets = new List<Fleet>();
 
     /**
-     * Used to instantiate new fleet.
+     * \brief   Используется для создания нового флота
+     *          (для отладки онли?).
      */
     public int shipsAmount;
 
     /**
-     * Время в секундах, необходимое для перелёта
-     * флота с одной системы на другую.
+     * \brief   Время в секундах, необходимое для перелёта
+     *          флота с одной системы на другую.
      */
     public float flightTime = 2.0f;
 
@@ -29,7 +30,7 @@ public class FleetManager : MonoBehaviour
     }
 
     /**
-     * Used only within editor!!
+     * \brief   Создаёт флот в текущей выбранной системе (для отладки онли?).
      */
     public Fleet CreateNewFleet(int shipsAmount)
     {
@@ -48,12 +49,19 @@ public class FleetManager : MonoBehaviour
         {
             // place new ship correctly
             float radius = GameObject.FindObjectOfType<PlanetSystemGenerator>().GetShipOrbitRadius();
-            Vector3 direction = Random.onUnitSphere;
-            Vector3 position = ownerTransform.position + radius * direction;
+            // Vector3 direction = Random.onUnitSphere;
+            // Vector3 position = ownerTransform.position + radius * direction;
 
-            Quaternion rotation = Quaternion.FromToRotation(Vector3.right, direction);
+            // Quaternion rotation = Quaternion.FromToRotation(Vector3.right, direction);
             
-            Ship ship = Instantiate(shipPrefab, position, rotation, transform);
+            Ship ship = Instantiate(shipPrefab, ownerTransform.position, Quaternion.identity, transform);
+
+            float r1 = radius;
+            float r2 = 0.1f * r1;
+            Orbiter orbiter = ship.GetComponent<Orbiter>();
+            orbiter.InitRandomInThor(Vector3.back, r1, r2);
+            orbiter.targetTransform = ownerTransform;
+
             fleet.ships.Add(ship);
             Debug.Log("New ship generated!");
         }
@@ -66,7 +74,7 @@ public class FleetManager : MonoBehaviour
     }
 
     /**
-     * Used within editor only!!
+     * \brief   Удаляет все имеющиеся флоты (для отладки онли).
      */
     public void RemoveAllFleets()
     {
@@ -88,10 +96,9 @@ public class FleetManager : MonoBehaviour
 
         fleets.Clear();
     }
-    
+
     /**
-     * Finds and returns fleet that had been
-     * associated with given planet system.
+     * \brief   Производит поиск флота, привязанного к переданной системе.
      */
     public Fleet GetAssociatedFleet(PlanetSystem system)
     {
